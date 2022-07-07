@@ -5,10 +5,9 @@ import { InputFilter } from "components/ContactForm/ContactForm.styled";
 export const Filter = ({ value, onChange }) => {
 
     return (
-        <label className="label" htmlFor='inputFilter'>
+        <label>
                 Find Contacts by Name
             <InputFilter
-                id='inputFilter'
                 type="text"
                 name="filter"
                 onChange={onChange}

@@ -3,8 +3,7 @@ import {ContactElement} from "components/ContactList/ContactElement/ContactEleme
 import PropTypes from 'prop-types';
 
 export const ContactList = ({ contacts, filter, onDeleteContact }) => {
-    const contactForRender = filter ? contacts.filter(contact => ((contact.name).includes(filter) || (contact.number).includes(filter)))
-        : contacts;
+    const contactForRender = contacts.filter(contact => ((contact.name).includes(filter) || (contact.number).includes(filter)));
 
     if (contactForRender.length !== 0) {
         return (
@@ -18,7 +17,7 @@ export const ContactList = ({ contacts, filter, onDeleteContact }) => {
                 }
             </ul>
         )
-    }
+    } 
 }
 
 ContactList.propTypes = {
