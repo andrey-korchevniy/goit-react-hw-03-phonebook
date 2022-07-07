@@ -18,6 +18,9 @@ export const ContactList = ({ contacts, filter, onDeleteContact }) => {
             </ul>
         )
     } 
+    else return (
+        <h3> There is no contacts</h3>
+    )
 }
 
 ContactList.propTypes = {
