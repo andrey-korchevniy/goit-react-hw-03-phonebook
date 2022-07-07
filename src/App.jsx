@@ -1,31 +1,43 @@
 import React, { Component } from "react";
-// import "components/styles.css";
-import ContactForm from "components/ContactForm/ContactForm";
-import Filter from "components/Filter/Filter";
+import  {ContactForm}  from "components/ContactForm/ContactForm";
+import { Filter } from "components/Filter/Filter";
 import { ContactList } from "components/ContactList/ContactList";
 import { nanoid } from 'nanoid';
 
 class App extends Component {
   state = {
-    contacts: [
-      {id: 'id-1', name: 'Rosie Simpson', number: '459-12-56'},
-      {id: 'id-2', name: 'Hermione Kline', number: '443-89-12'},
-      {id: 'id-3', name: 'Eden Clements', number: '645-17-79'},
-      {id: 'id-4', name: 'Annie Copeland', number: '227-91-26'},
-    ],
+    contacts: [],
     filter: '',
   }
 
+  // завантажуємо масив контактів з локал сториз
+  componentDidMount() {
+    const contacts = JSON.parse(localStorage.getItem("contacts"));
+    if (contacts) {
+      this.setState({ contacts: contacts })
+    };
+  }
+
+  // записуємо змінені контакти до локал сторіз
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem("contacts", JSON.stringify(this.state.contacts))
+    }
+  }
+
+  // обробляємо додавання нового контакту
   addContact = (formName, formNumber) => {
-        this.setState(prevState => ({
-        contacts: [{ name: formName, id: nanoid(), number: formNumber }, ...prevState.contacts],
+    this.setState(prevState => ({
+    contacts: [{ id: nanoid(), name: formName, number: formNumber }, ...prevState.contacts],
     }));
   }
 
-  handleInputChange = e => {
+  // обробляємо кожне натискання в полі "фільтр"
+  handleInputFilter = e => {
     this.setState({ [e.currentTarget.name]: e.currentTarget.value });
   }
 
+  // обробляємо натискання "видалити контакт"
   deleteContact = (contactId) => {
     this.setState(prevState => (
       {contacts: prevState.contacts.filter(contact => contact.id !== contactId)}
@@ -37,18 +49,20 @@ class App extends Component {
 
     return (
       <div>
-
+{/* форма им'я-телефон */}
         <ContactForm
           onSubmit={this.addContact}
           contacts={contacts}
         />
  
         <h2>Contacts</h2>
+{/* форма фільтру */}
         <Filter
           value={filter}
-          onChange={this.handleInputChange}
+          onChange={this.handleInputFilter}
         />
-        
+
+{/* виводить повний список або отфільтровані контакти */}
         <ContactList
           contacts={contacts}
           filter={filter}

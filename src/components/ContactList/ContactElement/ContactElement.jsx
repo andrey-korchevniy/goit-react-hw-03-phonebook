@@ -2,7 +2,8 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { Button } from "components/ContactForm/ContactForm.styled"
 
-function ContactElement({id,  name, number, onDeleteContact }) {
+export const ContactElement = ({ contact, onDeleteContact }) => {
+    const { name, number, id } = contact;
     return (
         <li>
             {name}: {number}
@@ -11,10 +12,6 @@ function ContactElement({id,  name, number, onDeleteContact }) {
 }
 
 ContactElement.propTypes = {
-    name: PropTypes.string.isRequired,
-    number: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
+    contact: PropTypes.object.isRequired,
     onDeleteContact: PropTypes.func.isRequired,
 }
-
-export default ContactElement;

@@ -1,68 +1,61 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import { FormOfContacts, Label, InputLine, Button } from './ContactForm.styled';
+import { Label, Button } from './ContactForm.styled';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as yup from 'yup';
 
+const validationSchema = yup.object().shape({
+    name: yup.string().min(3).required(),
+    number: yup.number().required()
+})
 
-class ContactForm extends React.Component {
-    state = {
-        name: '',
-        number: ''
-    }
+export const ContactForm = ({ onSubmit, contacts }) => {
+    const handleSubmit = (values, { resetForm }) => {
+        const { name, number } = values;
 
-    handleInputChange = e => {
-        this.setState({ [e.currentTarget.name]: e.currentTarget.value });
-    }
-
-    handleSubmit = e => {
-        e.preventDefault();
-        if (this.props.contacts.map(el => el = el.name).includes(this.state.name)) {
-             alert(`${this.state.name} is already in contacts`)
+        if (contacts.map(el => el = el.name).includes(name) ||
+            contacts.map(el => el = el.number).includes(number)) {
+            alert(`This contact is already in contacts`)
         }
         else {
-            this.props.onSubmit(this.state.name, this.state.number);
-            this.reset()
-        }        
-    }
-    
-    reset = () => {
-        this.setState({name: '', number: ''})
-    }
+            onSubmit(name, number);
+            resetForm()
+        }       
+    };
 
-    render() {
-        const { name, number } = this.state;
-        return (
-            <FormOfContacts onSubmit={this.handleSubmit}>
-                <Label className="label" htmlFor='inputName'>Name</Label>
-                <InputLine
-                    className="input-name"
-                    id='inputName'
-                    type="text"
-                    name="name"
-                    pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                    title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                    required
-                    onChange={this.handleInputChange}
-                    value={name}
-                />
-                <Label className="label" htmlFor='inputTel'>Number</Label>
-                <InputLine
-                    className="input-name"
-                    id='inputTel'
-                    type="tel"
-                    name="number"
-                    pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                    title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                    required
-                    onChange={this.handleInputChange}
-                    value={number}
-                />
-                <Button className="add-btn" type="submit" >Add Contact</Button>
-            </FormOfContacts>)
-    }
-}
+    return (
+        <Formik
+            initialValues={{ name: '', number: '' }}
+            validationSchema = {validationSchema}
+            onSubmit={handleSubmit}>
+            <Form >
+                <Label htmlFor='name'>
+                    Name
+                    <Field
+                        type="text"
+                        name="name"
+                        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+                        required
+                    />
+                    <ErrorMessage name="name" />
+                </Label>
+                <Label htmlFor='number'>
+                    Number
+                    <Field
+                        type="tel"
+                        name="number"
+                        title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+                        required
+                    />
+                    <ErrorMessage name="number" />
+                </Label>
+                <Button type="submit">Add Contact</Button>
+            </Form>
+        </Formik>
+    );
+};
 
 ContactForm.propTypes = {
     onSubmit: PropTypes.func.isRequired,
+    contacts: PropTypes.array.isRequired
 }
-
-export default ContactForm;
